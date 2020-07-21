@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ConsoleSimulation": {
+      "commandName": "Project",
+      "commandLineArgs": "--origin http://localhost:8080"
+    }
+  }
+}
