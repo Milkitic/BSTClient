@@ -71,8 +71,8 @@ namespace ConsoleSimulation
 
         private static void CurrentDomain_ProcessExit(object sender, EventArgs e)
         {
-            _signalRClient.Connection?.StopAsync().Wait();
-            _signalRClient.Connection?.DisposeAsync().Wait();
+            _signalRClient.Connection?.Stop();
+            _signalRClient.Connection?.Dispose();
         }
 
         private static void SignalRClient_RequestExit()

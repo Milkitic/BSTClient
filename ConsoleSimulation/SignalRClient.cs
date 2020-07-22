@@ -35,9 +35,9 @@ namespace ConsoleSimulation
             await Connection.Start();
         }
 
-        public void Send(string value)
+        public async Task Send(string value)
         {
-            HubProxy.Invoke("StandardInput", value);
+            await HubProxy.Invoke("StandardInput", value);
         }
 
         private void OnRequestExitExit()

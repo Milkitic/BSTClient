@@ -30,20 +30,5 @@ namespace BSTClient
         {
 
         }
-        private void StartServer()
-        {
-            try
-            {
-                SignalR = WebApp.Start(ServerURI);
-            }
-            catch (TargetInvocationException)
-            {
-                WriteToConsole("A server is already running at " + ServerURI);
-                this.Dispatcher.Invoke(() => ButtonStart.IsEnabled = true);
-                return;
-            }
-            this.Dispatcher.Invoke(() => ButtonStop.IsEnabled = true);
-            WriteToConsole("Server started at " + ServerURI);
-        }
     }
 }
