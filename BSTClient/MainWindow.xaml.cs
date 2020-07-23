@@ -16,6 +16,14 @@ using System.Windows.Shapes;
 
 namespace BSTClient
 {
+    public class MainWindowVm : VmBase
+    {
+        public ICommand SelectCmd => new DelegateCommand<string>(obj =>
+        {
+
+        });
+    }
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>

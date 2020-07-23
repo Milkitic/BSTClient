@@ -11,6 +11,9 @@
     Height="450"
     Loaded="Window_Loaded"
     mc:Ignorable="d">
+    <Window.DataContext>
+        <local:MainWindowVm />
+    </Window.DataContext>
     <Grid>
         <hc:Drawer
             Name="DrawerLeft"
@@ -40,6 +43,74 @@
                         Command="hc:ControlCommands.Close"
                         Foreground="{DynamicResource PrimaryTextBrush}"
                         Style="{StaticResource ButtonIcon}" />
+                    <Grid Grid.Row="1">
+                        <hc:SideMenu BorderThickness="1">
+                            <hc:SideMenuItem Header="Overview">
+                                <hc:SideMenuItem.Icon>
+                                    <Image
+                                        Width="24"
+                                        Height="24"
+                                        Source="/HandyControlDemo;component/Resources/Img/DevOps/DevOps-Overview.png" />
+                                </hc:SideMenuItem.Icon>
+                                <hc:SideMenuItem
+                                    Command="{Binding SelectCmd}"
+                                    CommandParameter="{Binding Header, RelativeSource={RelativeSource Self}}"
+                                    Header="Summary">
+                                    <hc:SideMenuItem.Icon>
+                                        <TextBlock Style="{StaticResource TextBlockFabricIcons}" Text="&#xf2cb;" />
+                                    </hc:SideMenuItem.Icon>
+                                </hc:SideMenuItem>
+                                <hc:SideMenuItem
+                                    Command="{Binding SelectCmd}"
+                                    CommandParameter="{Binding Header, RelativeSource={RelativeSource Self}}"
+                                    Header="Dashboards">
+                                    <hc:SideMenuItem.Icon>
+                                        <TextBlock Style="{StaticResource TextBlockFabricIcons}" Text="&#xf246;" />
+                                    </hc:SideMenuItem.Icon>
+                                </hc:SideMenuItem>
+                                <hc:SideMenuItem
+                                    Command="{Binding SelectCmd}"
+                                    CommandParameter="{Binding Header, RelativeSource={RelativeSource Self}}"
+                                    Header="Wiki">
+                                    <hc:SideMenuItem.Icon>
+                                        <TextBlock Style="{StaticResource TextBlockFabricIcons}" Text="&#xe82d;" />
+                                    </hc:SideMenuItem.Icon>
+                                </hc:SideMenuItem>
+                            </hc:SideMenuItem>
+                            <hc:SideMenuItem Header="Overview">
+                                <hc:SideMenuItem.Icon>
+                                    <Image
+                                        Width="24"
+                                        Height="24"
+                                        Source="/HandyControlDemo;component/Resources/Img/DevOps/DevOps-Overview.png" />
+                                </hc:SideMenuItem.Icon>
+                                <hc:SideMenuItem
+                                    Command="{Binding SelectCmd}"
+                                    CommandParameter="{Binding Header, RelativeSource={RelativeSource Self}}"
+                                    Header="Summary">
+                                    <hc:SideMenuItem.Icon>
+                                        <TextBlock Style="{StaticResource TextBlockFabricIcons}" Text="&#xf2cb;" />
+                                    </hc:SideMenuItem.Icon>
+                                </hc:SideMenuItem>
+                                <hc:SideMenuItem
+                                    Command="{Binding SelectCmd}"
+                                    CommandParameter="{Binding Header, RelativeSource={RelativeSource Self}}"
+                                    Header="Dashboards">
+                                    <hc:SideMenuItem.Icon>
+                                        <TextBlock Style="{StaticResource TextBlockFabricIcons}" Text="&#xf246;" />
+                                    </hc:SideMenuItem.Icon>
+                                </hc:SideMenuItem>
+                                <hc:SideMenuItem
+                                    Command="{Binding SelectCmd}"
+                                    CommandParameter="{Binding Header, RelativeSource={RelativeSource Self}}"
+                                    Header="Wiki">
+                                    <hc:SideMenuItem.Icon>
+                                        <TextBlock Style="{StaticResource TextBlockFabricIcons}" Text="&#xe82d;" />
+                                    </hc:SideMenuItem.Icon>
+                                </hc:SideMenuItem>
+                            </hc:SideMenuItem>
+                        </hc:SideMenu>
+                    </Grid>
                 </Grid>
             </Border>
         </hc:Drawer>
