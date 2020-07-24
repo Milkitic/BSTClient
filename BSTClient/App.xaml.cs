@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BSTClient.Credentials;
 using System.Windows;
 
 namespace BSTClient
@@ -13,5 +8,14 @@ namespace BSTClient
     /// </summary>
     public partial class App : Application
     {
+        private void Application_Startup(object sender, StartupEventArgs e)
+        {
+            var list = CredentialManager.EnumerateCrendentials();
+            if (UserPasswordManager.TryGet(out string uname, out string pword))
+            {
+
+            }
+            UserPasswordManager.Set("asdf", "1234");
+        }
     }
 }
