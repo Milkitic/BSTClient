@@ -2,6 +2,7 @@
 using System;
 using System.Security.Cryptography;
 using System.Text;
+using BSTClient;
 
 namespace ConsoleApp1
 {
@@ -9,18 +10,8 @@ namespace ConsoleApp1
     {
         static void Main(string[] args)
         {
+            var result1 = McGenerator.GetMachineCode();
             Console.WriteLine("Hello World!");
-            var result = CredentialManager.EnumerateCrendentials();
-            var value = CredentialManager.ReadCredential("BSTClient");
-            var val = Unprotect(value.Password);
-        }
-
-        private static string Unprotect(string str)
-        {
-            byte[] protectedData = Convert.FromBase64String(str);
-            byte[] entropy = Encoding.ASCII.GetBytes("BSTClient");
-            string data = Encoding.ASCII.GetString(ProtectedData.Unprotect(protectedData, entropy, DataProtectionScope.CurrentUser));
-            return data;
         }
     }
 }
