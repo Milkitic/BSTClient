@@ -18,6 +18,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BSTClient.API\BSTClient.API.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="Resources\fabric-icons.ttf" />
   </ItemGroup>
 

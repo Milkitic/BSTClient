@@ -115,6 +115,6 @@
             </Border>
         </hc:Drawer>
         <TextBlock Text="123" />
-        <!--<Frame Source="Pages/LoginPage.xaml" />-->
+        <Frame Source="Pages/LoginPage.xaml" />
     </Grid>
 </Window>

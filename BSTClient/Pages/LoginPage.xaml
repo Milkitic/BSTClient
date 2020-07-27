@@ -13,6 +13,7 @@
     <Grid>
         <StackPanel HorizontalAlignment="Center">
             <hc:TextBox
+                x:Name="tbUser"
                 Width="280"
                 Margin="0,22,0,0"
                 hc:InfoElement.Placeholder="请输入用户名"
@@ -22,6 +23,7 @@
                 Style="{StaticResource TextBoxExtend}"
                 Text="" />
             <hc:PasswordBox
+                x:Name="tbPass"
                 Width="280"
                 Margin="0,22,0,0"
                 hc:InfoElement.Placeholder="请输入密码"
@@ -36,17 +38,26 @@
                 <Button
                     Width="65"
                     Margin="5,0"
+                    Click="BtnLogin_Click"
                     Content="登录"
                     Style="{StaticResource ButtonPrimary}" />
                 <Button
+                    Margin="10,0"
+                    Content="忘记密码"
+                    Cursor="Hand"
+                    Style="{StaticResource ButtonCustom}" />
+                <!--<Button
                     Width="65"
                     Margin="5,0"
-                    Content="注册" />
+                    Content="注册" />-->
             </StackPanel>
-            <Button
-                Margin="0,22"
-                Content="忘记密码"
-                Style="{StaticResource ButtonCustom}" />
+            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                <Button
+                    Margin="0,22"
+                    Content="没有账号？注册新用户"
+                    Cursor="Hand"
+                    Style="{StaticResource ButtonCustom}" />
+            </StackPanel>
         </StackPanel>
     </Grid>
 </Page>
