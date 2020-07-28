@@ -18,6 +18,10 @@ namespace BSTClient.API
         private HttpClient _hc = new HttpClient();
         private bool _initialized;
 
+        public string Host { get; set; } = "http://localhost:27001/";
+
+        public static Requester Default { get; private set; }
+
         public Requester()
         {
             if (UserPasswordManager.TryGet(out string uname, out string pword))
@@ -25,49 +29,113 @@ namespace BSTClient.API
                 Initialize(uname, pword, false);
             }
 
+            Default = this;
+        }
+
+        public async Task<string> TestAuthenticationAsync()
+        {
+            try
+            {
+                var result = await _hc.GetAsync(
+                    $"{Host}api/authenticate/test"
+                );
+
+                if (GetUnhandledMessage(result, out var message)) return message;
+                return null;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
         }
 
         public async Task<string> AuthenticationAsync(string user, string pass)
         {
-            var json = JsonConvert.SerializeObject(new AuthenticateModel()
+            try
             {
-                Username = user,
-                Password = pass
-            });
-            var result = await _hc.PostAsync("http://localhost:27001/api/users/authenticate",
-                new StringContent(json, Encoding.UTF8, "application/json"));
+                var reqJson = JsonConvert.SerializeObject(new AuthenticateModel(user, pass));
 
-            string message;
-            var code = result.StatusCode;
+                var result = await _hc.PostAsync(
+                    $"{Host}api/authenticate",
+                    GetJsonContent(reqJson)
+                );
 
+                if (GetUnhandledMessage(result, out var message)) return message;
+
+                var respJson = await result.Content.ReadAsStringAsync();
+                if (result.StatusCode == HttpStatusCode.OK &&
+                    ResponseBase.GetCode(respJson) == "200")
+                {
+                    Initialize(user, pass, !_initialized);
+                    return null;
+                }
+
+                return GetJsonMessage(respJson);
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
+        public async Task<(bool success, string message, NavObj)> GetNavigatorInfo()
+        {
+            try
+            {
+                var result = await _hc.GetAsync(
+                    $"{Host}api/navigator"
+                );
+
+                if (GetUnhandledMessage(result, out var message)) return (false, message, null);
+                var respJson = await result.Content.ReadAsStringAsync();
+                if (result.StatusCode == HttpStatusCode.OK &&
+                    ResponseBase.GetCode(respJson) == "200")
+                {
+                    var obj = JsonConvert.DeserializeObject<ResponseDataBase<NavObj>>(respJson);
+                    return (true, obj.Message, obj.Data);
+                }
+
+                return (false, GetJsonMessage(respJson), null);
+            }
+            catch (Exception ex)
+            {
+                return (false, ex.Message, null);
+            }
+        }
+
+        private static string GetJsonMessage(string json)
+        {
+            var jsonCode = ResponseBase.GetCode(json);
+            var jsonMessage = ResponseBase.GetMessage(json);
+            if (jsonCode != "400.1") return jsonMessage;
+
+            var kvp = JsonConvert.DeserializeObject<ResponseDataBase<Dictionary<string, string>>>(json);
+            return jsonMessage + ":" + Environment.NewLine + string.Join(Environment.NewLine,
+                kvp.Data.Select(k => k.Key + ": " + k.Value));
+        }
+
+        private static bool GetUnhandledMessage(HttpResponseMessage result, out string s)
+        {
             try
             {
                 result.EnsureSuccessStatusCode();
             }
             catch (Exception ex)
             {
-                message = ex.Message;
-                if (code != HttpStatusCode.BadRequest)
-                    return message;
+                if (result.StatusCode != HttpStatusCode.BadRequest)
+                {
+                    s = ex.Message;
+                    return true;
+                }
             }
 
-            var content = await result.Content.ReadAsStringAsync();
-            if (code == HttpStatusCode.OK)
-            {
-                Initialize(user, pass, !_initialized);
-                return null;
-            }
+            s = null;
+            return false;
+        }
 
-            var jsonCode = ResponseBase.GetCode(content);
-            var jsonMessage = ResponseBase.GetMessage(content);
-            if (jsonCode == "400.1")
-            {
-                var d = JsonConvert.DeserializeObject<ResponseDataBase<Dictionary<string, string>>>(content);
-                return jsonMessage + ":" + Environment.NewLine + string.Join(Environment.NewLine,
-                    d.Data.Select(k => k.Key + ": " + k.Value));
-            }
-
-            return jsonMessage;
+        private static StringContent GetJsonContent(string json)
+        {
+            return new StringContent(json, Encoding.UTF8, "application/json");
         }
 
         private void Initialize(string user, string pass, bool update)

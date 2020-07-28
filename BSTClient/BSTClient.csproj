@@ -25,4 +25,8 @@
     <Resource Include="Resources\fabric-icons.ttf" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controls\" />
+  </ItemGroup>
+
 </Project>

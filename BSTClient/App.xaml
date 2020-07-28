@@ -11,11 +11,14 @@
                 <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/SkinDefault.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <FontFamily x:Key="FabricIcons">pack://application:,,,/BSTClient;component/Resources/fabric-icons.ttf#Fabric MDL2 Assets</FontFamily>
+            <!--<FontFamily x:Key="FabricIcons">pack://application:,,,/BSTClient;component/Resources/fabric-icons.ttf#Fabric MDL2 Assets</FontFamily>-->
 
             <Style x:Key="TextBlockFabricIcons" TargetType="TextBlock">
-                <Setter Property="FontFamily" Value="{StaticResource FabricIcons}" />
-                <Setter Property="FontSize" Value="14" />
+                <Setter Property="FontFamily" Value="Segoe MDL2 Assets" />
+                <!--<Setter Property="TextOptions.TextFormattingMode" Value="Display" />-->
+                <Setter Property="TextOptions.TextHintingMode" Value="Fixed" />
+                <Setter Property="TextOptions.TextRenderingMode" Value="Auto" />
+                <Setter Property="FontSize" Value="18" />
             </Style>
         </ResourceDictionary>
     </Application.Resources>

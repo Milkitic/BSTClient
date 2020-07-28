@@ -1,6 +1,8 @@
 ﻿using BSTClient.API;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Navigation;
+
 //using MessageBox = HandyControl.Controls.MessageBox;
 
 namespace BSTClient.Pages
@@ -10,7 +12,6 @@ namespace BSTClient.Pages
     /// </summary>
     public partial class LoginPage : Page
     {
-        readonly Requester _req = new Requester();
         public LoginPage()
         {
             InitializeComponent();
@@ -20,7 +21,7 @@ namespace BSTClient.Pages
         {
             var user = this.tbUser.Text;
             var password = tbPass.Password;
-            var message = await _req.AuthenticationAsync(user, password);
+            var message = await Requester.Default.AuthenticationAsync(user, password);
             if (message != null)
             {
                 //new MessageBoxInfo()
@@ -34,10 +35,37 @@ namespace BSTClient.Pages
             }
             else
             {
-                MessageBox.Show("200", App.Current.MainWindow.Title, MessageBoxButton.OK,
-                    MessageBoxImage.Information);
+                //MessageBox.Show("200", App.Current.MainWindow.Title, MessageBoxButton.OK,
+                //    MessageBoxImage.Information);
+                var mainWindow = (MainWindow)Application.Current.MainWindow;
+                mainWindow.DrawerLeft.Visibility = Visibility.Visible;
+
+                mainWindow.MainFrame.Navigated += OnMainFrameOnNavigated;
+                mainWindow.MainFrame?.Navigate(new DashboardPage());
+
+                void OnMainFrameOnNavigated(object obj, NavigationEventArgs arg)
+                {
+                    ClearHistory(mainWindow.MainFrame);
+                    mainWindow.MainFrame.Navigated -= OnMainFrameOnNavigated;
+                }
             }
 
+        }
+        public static void ClearHistory(Frame frame)
+        {
+            if (frame == null) return;
+            if (!frame.CanGoBack && !frame.CanGoForward)
+            {
+                return;
+            }
+
+            var entry = frame.RemoveBackEntry();
+            while (entry != null)
+            {
+                entry = frame.RemoveBackEntry();
+            }
+
+            //frame.Navigate(new PageFunction<string>() { RemoveFromJournal = true });
         }
     }
 }

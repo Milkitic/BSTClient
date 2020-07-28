@@ -9,8 +9,6 @@ namespace BSTClient
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            //var list = CredentialManager.EnumerateCrendentials();
-            //UserPasswordManager.Set("asdf", "1234");
         }
     }
 }

@@ -1,0 +1,44 @@
+﻿<Page
+    x:Class="BSTClient.Pages.NotFoundPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:BSTClient.Pages"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:response="clr-namespace:BSTClient.API.Models.Response;assembly=BSTClient.API"
+    Title="NotFoundPage"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <d:Object.DataContext>
+        <response:ItemObj />
+    </d:Object.DataContext>
+    <Grid>
+        <Border Background="{DynamicResource ColorPickerOpacityBrush}" Opacity="0.1" />
+        <StackPanel VerticalAlignment="Center" Orientation="Vertical">
+            <TextBlock
+                Margin="0,15"
+                HorizontalAlignment="Center"
+                FontSize="48"
+                Style="{StaticResource TextBlockFabricIcons}"
+                Text="&#xE7BA;" />
+            <TextBlock HorizontalAlignment="Center" FontSize="22">
+                <Run Text="找不到相应模块: " /><Run Text="{Binding Name}" />
+            </TextBlock>
+            <TextBlock
+                Margin="0,9"
+                HorizontalAlignment="Center"
+                FontSize="12"
+                Foreground="#A0A0A0">
+                <Run Text="Not Found: " /><Run Text="{Binding Tag}" /><Run Text="(" /><Run Text="{Binding Id}" /><Run Text=")" />
+                <!--<Run Text="id: " /><Run Text="{Binding Id}" /><Run Text="    "/><Run Text="tag: " /><Run Text="{Binding Tag}" />-->
+            </TextBlock>
+            <TextBlock
+                HorizontalAlignment="Center"
+                Cursor="Hand"
+                FontSize="14"
+                Foreground="#727272"
+                Text="尝试更新客户端程序?" />
+        </StackPanel>
+    </Grid>
+</Page>
