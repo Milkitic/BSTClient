@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BSTClient.Credentials.Natives
+namespace BSTClient.Shared.Credentials.Natives
 {
     [Flags]
     internal enum CredentialUIFlags

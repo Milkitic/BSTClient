@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
-using BSTClient.Credentials.Natives;
+using BSTClient.Shared.Credentials.Natives;
 
-namespace BSTClient.Credentials
+namespace BSTClient.Shared.Credentials
 {
     public static class CredentialManager
     {
@@ -270,7 +269,7 @@ namespace BSTClient.Credentials
             inCredSize = 0;
         }
 
-        private static bool GetCredentialsFromOutputBuffer(IntPtr outCredBuffer, uint outCredSize, [NotNullWhen(returnValue: true)] out string? userName, [NotNullWhen(returnValue: true)]out string? password, [NotNullWhen(returnValue: true)]out string? domain)
+        private static bool GetCredentialsFromOutputBuffer(IntPtr outCredBuffer, uint outCredSize, /*[NotNullWhen(returnValue: true)]*/ out string? userName, /*[NotNullWhen(returnValue: true)]*/out string? password, /*[NotNullWhen(returnValue: true)]*/out string? domain)
         {
             var maxUserName = Credui.CREDUI_MAX_USERNAME_LENGTH;
             var maxDomain = Credui.CREDUI_MAX_USERNAME_LENGTH;

@@ -1,8 +1,7 @@
-﻿using System.Windows;
-using BSTClient.API;
+﻿using BSTClient.API;
+using System.Windows;
 using System.Windows.Controls;
-using HandyControl.Data;
-using MessageBox = HandyControl.Controls.MessageBox;
+//using MessageBox = HandyControl.Controls.MessageBox;
 
 namespace BSTClient.Pages
 {
@@ -11,6 +10,7 @@ namespace BSTClient.Pages
     /// </summary>
     public partial class LoginPage : Page
     {
+        readonly Requester _req = new Requester();
         public LoginPage()
         {
             InitializeComponent();
@@ -20,9 +20,8 @@ namespace BSTClient.Pages
         {
             var user = this.tbUser.Text;
             var password = tbPass.Password;
-            var req = new Requester();
-            var (success, message) = await req.AuthenticationAsync(user, password);
-            if (!success)
+            var message = await _req.AuthenticationAsync(user, password);
+            if (message != null)
             {
                 //new MessageBoxInfo()
                 //{
@@ -35,8 +34,8 @@ namespace BSTClient.Pages
             }
             else
             {
-                MessageBox.Show(message, App.Current.MainWindow.Title, MessageBoxButton.OK,
-                    MessageBoxImage.Exclamation);
+                MessageBox.Show("200", App.Current.MainWindow.Title, MessageBoxButton.OK,
+                    MessageBoxImage.Information);
             }
 
         }

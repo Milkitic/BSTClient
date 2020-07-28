@@ -1,8 +1,13 @@
 ﻿using BSTClient.API.Models;
+using BSTClient.API.Models.Response;
+using BSTClient.Shared;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,13 +16,18 @@ namespace BSTClient.API
     public class Requester
     {
         private HttpClient _hc = new HttpClient();
+        private bool _initialized;
 
         public Requester()
         {
+            if (UserPasswordManager.TryGet(out string uname, out string pword))
+            {
+                Initialize(uname, pword, false);
+            }
 
         }
 
-        public async Task<(bool success, string message)> AuthenticationAsync(string user, string pass)
+        public async Task<string> AuthenticationAsync(string user, string pass)
         {
             var json = JsonConvert.SerializeObject(new AuthenticateModel()
             {
@@ -38,16 +48,38 @@ namespace BSTClient.API
             {
                 message = ex.Message;
                 if (code != HttpStatusCode.BadRequest)
-                    return (false, message);
+                    return message;
             }
 
             var content = await result.Content.ReadAsStringAsync();
-            if (code != HttpStatusCode.OK)
+            if (code == HttpStatusCode.OK)
             {
-                return (true, content);
+                Initialize(user, pass, !_initialized);
+                return null;
             }
 
-            return (false, content);
+            var jsonCode = ResponseBase.GetCode(content);
+            var jsonMessage = ResponseBase.GetMessage(content);
+            if (jsonCode == "400.1")
+            {
+                var d = JsonConvert.DeserializeObject<ResponseDataBase<Dictionary<string, string>>>(content);
+                return jsonMessage + ":" + Environment.NewLine + string.Join(Environment.NewLine,
+                    d.Data.Select(k => k.Key + ": " + k.Value));
+            }
+
+            return jsonMessage;
+        }
+
+        private void Initialize(string user, string pass, bool update)
+        {
+            var bytes = Encoding.UTF8.GetBytes(user + ":" + pass);
+            var base64 = Convert.ToBase64String(bytes);
+            var g = new AuthenticationHeaderValue("Basic", base64);
+            _hc.DefaultRequestHeaders.Authorization = g;
+            if (update)
+                UserPasswordManager.Set(user, pass);
+
+            _initialized = true;
         }
     }
 }

@@ -1,12 +1,12 @@
-﻿using BSTClient.Credentials;
+﻿using BSTClient.Shared.Credentials;
 using System;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace BSTClient
+namespace BSTClient.Shared
 {
-    internal static class UserPasswordManager
+    public static class UserPasswordManager
     {
         private static string ApplicationName => AppDomain.CurrentDomain.FriendlyName;
 
@@ -47,17 +47,15 @@ namespace BSTClient
         private static string Protect(string str)
         {
             byte[] encrypted;
-            using (var myAes = RC2.Create())
+            using (var algorithm = Aes.Create())
             {
-                encrypted = Encrypt(str, myAes.Key, myAes.IV);
-                SaveKey(myAes.Key);
-                SaveIv(myAes.IV);
+                encrypted = Encrypt(str, algorithm.Key, algorithm.IV);
+                SaveKey(algorithm.Key);
+                SaveIv(algorithm.IV);
             }
 
             byte[] entropy = Encoding.Unicode.GetBytes(ApplicationName);
-            //byte[] data = Encoding.Unicode.GetBytes(str);
             string protectedData = Convert.ToBase64String(ProtectedData.Protect(encrypted, entropy, DataProtectionScope.CurrentUser));
-            //var de = DecryptStringFromBytes_Aes(encrypted, myAes.Key, myAes.IV);
             return protectedData;
         }
 
@@ -66,9 +64,10 @@ namespace BSTClient
             // Encrypt the string to an array of bytes.
             byte[] entropy = Encoding.Unicode.GetBytes(ApplicationName);
             byte[] protectedData = Convert.FromBase64String(str);
-            string data = Encoding.Unicode.GetString(ProtectedData.Unprotect(protectedData, entropy, DataProtectionScope.CurrentUser));
+            //string data = Encoding.Unicode.GetString(ProtectedData.Unprotect(protectedData, entropy, DataProtectionScope.CurrentUser));
 
-            var bytes = Encoding.Unicode.GetBytes(data);
+            //var bytes = Encoding.Unicode.GetBytes(data);
+            var bytes = ProtectedData.Unprotect(protectedData, entropy, DataProtectionScope.CurrentUser);
             var readKey = ReadKey();
             var readIv = ReadIv();
             string decrypted = Decrypt(bytes, readKey, readIv);
@@ -102,32 +101,38 @@ namespace BSTClient
         }
         private static byte[] Encrypt(string text, byte[] deKey, byte[] deIv)
         {
-            byte[] buffer;
-            using var ms = new MemoryStream();
-            using SymmetricAlgorithm key = RC2.Create();
-            using var encStream = new CryptoStream(ms, key.CreateEncryptor(deKey, deIv), CryptoStreamMode.Write);
-            using (StreamWriter sw = new StreamWriter(encStream))
-            {
-                sw.WriteLine(text);
-                sw.Close();
+            var ms = new MemoryStream();
+            var key = Aes.Create(); //SymmetricAlgorithm
+            key.Padding = PaddingMode.PKCS7;
 
+            var encStream = new CryptoStream(ms, key.CreateEncryptor(deKey, deIv), CryptoStreamMode.Write);
+            var sw = new StreamWriter(encStream);
+
+            sw.WriteLine(text);
+            sw.Close();
             encStream.Close();
 
-            buffer = ms.ToArray();
+            byte[] buffer = ms.ToArray();
             ms.Close();
 
-            }
             return buffer;
         }
 
         private static string Decrypt(byte[] encrypted, byte[] deKey, byte[] deIv)
         {
-            using var ms = new MemoryStream(encrypted);
-            using SymmetricAlgorithm key = RC2.Create();
-            using var encStream = new CryptoStream(ms, key.CreateDecryptor(deKey, deIv), CryptoStreamMode.Read);
-            using var sr = new StreamReader(encStream);
+            var ms = new MemoryStream(encrypted);
+            var key = Aes.Create();
+            key.Padding = PaddingMode.PKCS7;
 
-            var val = sr.ReadLine();
+            var encStream = new CryptoStream(ms, key.CreateDecryptor(deKey, deIv), CryptoStreamMode.Read);
+            var sr = new StreamReader(encStream);
+
+            string val = sr.ReadLine();
+
+            sr.Close();
+            encStream.Close();
+            ms.Close();
+
             return val;
         }
     }

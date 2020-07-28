@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace BSTClient.Credentials.Natives
+namespace BSTClient.Shared.Credentials.Natives
 {
     internal static class Credui
     {

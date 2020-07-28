@@ -1,4 +1,4 @@
-﻿namespace BSTClient.Credentials.Natives
+﻿namespace BSTClient.Shared.Credentials.Natives
 {
     internal enum CredentialUIReturnCodes : uint
     {

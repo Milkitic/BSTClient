@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace BSTClient.Credentials.Natives
+namespace BSTClient.Shared.Credentials.Natives
 {
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
     internal struct CREDENTIAL

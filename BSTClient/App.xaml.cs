@@ -1,5 +1,4 @@
-﻿using BSTClient.Credentials;
-using System.Windows;
+﻿using System.Windows;
 
 namespace BSTClient
 {
@@ -10,12 +9,8 @@ namespace BSTClient
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            var list = CredentialManager.EnumerateCrendentials();
-            if (UserPasswordManager.TryGet(out string uname, out string pword))
-            {
-
-            }
-            UserPasswordManager.Set("asdf", "1234");
+            //var list = CredentialManager.EnumerateCrendentials();
+            //UserPasswordManager.Set("asdf", "1234");
         }
     }
 }

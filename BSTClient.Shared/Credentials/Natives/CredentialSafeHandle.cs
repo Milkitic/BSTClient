@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using Microsoft.Win32.SafeHandles;
 
-namespace BSTClient.Credentials.Natives
+namespace BSTClient.Shared.Credentials.Natives
 {
     internal sealed class CredentialSafeHandle : SafeHandleZeroOrMinusOneIsInvalid
     {

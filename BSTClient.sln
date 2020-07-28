@@ -7,9 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BSTClient", "BSTClient\BSTC
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleSimulation", "ConsoleSimulation\ConsoleSimulation.csproj", "{0FCDDA06-E26D-4A2E-8A07-A81ABDC892AE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BSTClient.API", "BSTClient.API\BSTClient.API.csproj", "{C66AD4F8-3832-441C-9068-68F76222B417}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BSTClient.API", "BSTClient.API\BSTClient.API.csproj", "{C66AD4F8-3832-441C-9068-68F76222B417}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{090103E8-2B0A-4E0A-91E3-FB0069FC35CE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{090103E8-2B0A-4E0A-91E3-FB0069FC35CE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BSTClient.Shared", "BSTClient.Shared\BSTClient.Shared.csproj", "{0003D141-71F1-404B-AADC-457B618105E4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{090103E8-2B0A-4E0A-91E3-FB0069FC35CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{090103E8-2B0A-4E0A-91E3-FB0069FC35CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{090103E8-2B0A-4E0A-91E3-FB0069FC35CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0003D141-71F1-404B-AADC-457B618105E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0003D141-71F1-404B-AADC-457B618105E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0003D141-71F1-404B-AADC-457B618105E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0003D141-71F1-404B-AADC-457B618105E4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

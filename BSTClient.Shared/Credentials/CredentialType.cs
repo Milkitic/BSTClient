@@ -1,4 +1,4 @@
-﻿namespace BSTClient.Credentials
+﻿namespace BSTClient.Shared.Credentials
 {
     public enum CredentialType
     {
