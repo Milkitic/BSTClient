@@ -14,22 +14,26 @@
         <response:ItemObj />
     </d:Object.DataContext>
     <Grid>
-        <Border Background="{DynamicResource ColorPickerOpacityBrush}" Opacity="0.1" />
+        <Border Background="{DynamicResource ColorPickerOpacityBrush}" Opacity="0.01" />
         <StackPanel VerticalAlignment="Center" Orientation="Vertical">
             <TextBlock
                 Margin="0,15"
                 HorizontalAlignment="Center"
                 FontSize="48"
+                Foreground="{DynamicResource PrimaryTextBrush}"
                 Style="{StaticResource TextBlockFabricIcons}"
                 Text="&#xE7BA;" />
-            <TextBlock HorizontalAlignment="Center" FontSize="22">
+            <TextBlock
+                HorizontalAlignment="Center"
+                FontSize="22"
+                Foreground="{DynamicResource PrimaryTextBrush}">
                 <Run Text="找不到相应模块: " /><Run Text="{Binding Name}" />
             </TextBlock>
             <TextBlock
                 Margin="0,9"
                 HorizontalAlignment="Center"
                 FontSize="12"
-                Foreground="#A0A0A0">
+                Foreground="{DynamicResource ThirdlyTextBrush}">
                 <Run Text="Not Found: " /><Run Text="{Binding Tag}" /><Run Text="(" /><Run Text="{Binding Id}" /><Run Text=")" />
                 <!--<Run Text="id: " /><Run Text="{Binding Id}" /><Run Text="    "/><Run Text="tag: " /><Run Text="{Binding Tag}" />-->
             </TextBlock>
@@ -37,7 +41,7 @@
                 HorizontalAlignment="Center"
                 Cursor="Hand"
                 FontSize="14"
-                Foreground="#727272"
+                Foreground="{DynamicResource SecondaryTextBrush}"
                 Text="尝试更新客户端程序?" />
         </StackPanel>
     </Grid>

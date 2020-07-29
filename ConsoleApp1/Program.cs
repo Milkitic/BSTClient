@@ -1,7 +1,6 @@
-﻿using System;
-using System.Security.Cryptography;
-using System.Text;
-using BSTClient;
+﻿using BSTClient;
+using System;
+using System.Collections.Specialized;
 
 namespace ConsoleApp1
 {
@@ -10,6 +9,11 @@ namespace ConsoleApp1
         static void Main(string[] args)
         {
             var result1 = McGenerator.GetMachineCode();
+            HttpHelper.HttpUploadFile("http://localhost:27001/api/explorer/upload",
+                @"E:\MIS_Tianziling_Backup\20200526132414.zip", new NameValueCollection()
+                {
+                    ["remark"] = "test"
+                });
             Console.WriteLine("Hello World!");
         }
     }

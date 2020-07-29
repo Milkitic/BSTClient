@@ -4,6 +4,7 @@ using BSTClient.Shared;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -75,6 +76,34 @@ namespace BSTClient.API
             catch (Exception ex)
             {
                 return ex.Message;
+            }
+        }
+
+        public async Task<(bool success, string message, DirectoryObject)> GetDirectoryInfo(string relativePath)
+        {
+            try
+            {
+                var result = await _hc.GetAsync(
+                    string.Format("{0}api/explorer?splitChar={1}&relativePath={2}", 
+                        Host,
+                        Uri.EscapeDataString(Path.DirectorySeparatorChar.ToString()),
+                        Uri.EscapeDataString(relativePath))
+                );
+
+                if (GetUnhandledMessage(result, out var message)) return (false, message, null);
+                var respJson = await result.Content.ReadAsStringAsync();
+                if (result.StatusCode == HttpStatusCode.OK &&
+                    ResponseBase.GetCode(respJson) == "200")
+                {
+                    var obj = JsonConvert.DeserializeObject<ResponseDataBase<DirectoryObject>>(respJson);
+                    return (true, obj.Message, obj.Data);
+                }
+
+                return (false, GetJsonMessage(respJson), null);
+            }
+            catch (Exception ex)
+            {
+                return (false, ex.Message, null);
             }
         }
 

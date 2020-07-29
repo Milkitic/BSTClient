@@ -16,6 +16,7 @@ namespace BSTClient
     public class MainWindowVm : VmBase
     {
         private static Page _dashboardPage = new DashboardPage();
+        private static Page _filesPage = new FilesPage();
 
         public ICommand SelectCmd => new DelegateCommand<ItemObj>(item =>
         {
@@ -26,6 +27,9 @@ namespace BSTClient
             {
                 case "dashboard":
                     frame.Navigate(_dashboardPage);
+                    break;
+                case "files":
+                    frame.Navigate(_filesPage);
                     break;
                 default:
                     frame.Navigate(new NotFoundPage(item));
@@ -64,8 +68,10 @@ namespace BSTClient
                 if (success)
                 {
                     var style = (Style)Application.Current.FindResource("TextBlockFabricIcons");
-                    var brush = new SolidColorBrush(Color.FromRgb(248, 248, 248));
-                    var foreBrush = new SolidColorBrush(Color.FromRgb(48, 68, 128));
+                    var brush = (Brush)Application.Current.FindResource("SecondaryRegionBrush");
+                    //var brush = new SolidColorBrush(Color.FromRgb(248, 248, 248));
+                    //var foreBrush = new SolidColorBrush(Color.FromRgb(48, 68, 128));
+                    var foreBrush = (Brush)Application.Current.FindResource("SecondaryTextBrush");
                     DrawerLeft.Visibility = Visibility.Visible;
                     //_viewModel.NavSections = navObj.Sections;
                     foreach (var g in navObj.Sections)
