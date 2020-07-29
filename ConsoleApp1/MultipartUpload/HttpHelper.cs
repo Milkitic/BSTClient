@@ -4,7 +4,7 @@ using System.IO;
 using System.Net;
 using System.Text;
 
-namespace ConsoleApp1
+namespace ConsoleApp1.MultipartUpload
 {
     public static class HttpHelper
     {
