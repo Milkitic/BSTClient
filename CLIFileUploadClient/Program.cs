@@ -12,7 +12,7 @@ namespace CLIFileUploadClient
         private const string ErrorPrefix = "error: ";
         private static string _lastPercent;
         private static uint _accuracy = 1;
-        
+
         static int Main(string[] args)
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
@@ -80,12 +80,13 @@ namespace CLIFileUploadClient
                     return UsageErrorMessage();
                 }
 
-                MultipartUploadClient.UploadFileAsync(uri,
+                var result = MultipartUploadClient.UploadFileAsync(uri,
                     headers,
                     formData,
                     Encoding.Default,
-                    paths, OnDataTransferred).Wait();
-
+                    paths, OnDataTransferred).Result;
+                Console.WriteLine("finished");
+                Console.WriteLine(result);
                 return 0;
             }
             catch (Exception e)

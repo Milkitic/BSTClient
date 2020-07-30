@@ -112,13 +112,34 @@ namespace CLIFileUploadClient
             }
 
             //2.WebResponse
-            using (var response = (HttpWebResponse)await request.GetResponseAsync().ConfigureAwait(false))
-            using (var responseStream = response.GetResponseStream())
+            try
             {
-                if (responseStream == null) return null;
+                using (var response = (HttpWebResponse)await request.GetResponseAsync().ConfigureAwait(false))
+                using (var responseStream = response.GetResponseStream())
+                {
+                    if (responseStream == null) return null;
 
-                using (var sr = new StreamReader(responseStream))
-                    return await sr.ReadToEndAsync().ConfigureAwait(false);
+                    using (var sr = new StreamReader(responseStream))
+                        return await sr.ReadToEndAsync().ConfigureAwait(false);
+                }
+            }
+            catch (WebException e)
+            {
+                using (WebResponse response = e.Response)
+                {
+                    var httpResponse = (HttpWebResponse)response;
+                    if (httpResponse.StatusCode != HttpStatusCode.BadRequest) throw;
+                    using (var responseStream = httpResponse.GetResponseStream())
+                    {
+                        if (responseStream == null) throw;
+                        
+                        using (var sr = new StreamReader(responseStream))
+                        {
+                            var text = await sr.ReadToEndAsync();
+                            throw new Exception("response: " + text);
+                        }
+                    }
+                }
             }
         }
 

@@ -16,10 +16,11 @@ namespace BSTClient.API
 {
     public class Requester
     {
-        private HttpClient _hc = new HttpClient();
+        public HttpClient HttpClient { get; } = new HttpClient();
         private bool _initialized;
 
-        public string Host { get; set; } = "http://localhost:27001/";
+        //public string Host { get; set; } = "http://localhost:27001/";
+        public string Host { get; set; } = "http://milkitic.name:27001/";
 
         public static Requester Default { get; private set; }
 
@@ -37,7 +38,7 @@ namespace BSTClient.API
         {
             try
             {
-                var result = await _hc.GetAsync(
+                var result = await HttpClient.GetAsync(
                     $"{Host}api/authenticate/test"
                 );
 
@@ -56,7 +57,7 @@ namespace BSTClient.API
             {
                 var reqJson = JsonConvert.SerializeObject(new AuthenticateModel(user, pass));
 
-                var result = await _hc.PostAsync(
+                var result = await HttpClient.PostAsync(
                     $"{Host}api/authenticate",
                     GetJsonContent(reqJson)
                 );
@@ -83,8 +84,8 @@ namespace BSTClient.API
         {
             try
             {
-                var result = await _hc.GetAsync(
-                    string.Format("{0}api/explorer?splitChar={1}&relativePath={2}", 
+                var result = await HttpClient.GetAsync(
+                    string.Format("{0}api/explorer?splitChar={1}&relativePath={2}",
                         Host,
                         Uri.EscapeDataString(Path.DirectorySeparatorChar.ToString()),
                         Uri.EscapeDataString(relativePath))
@@ -111,7 +112,7 @@ namespace BSTClient.API
         {
             try
             {
-                var result = await _hc.GetAsync(
+                var result = await HttpClient.GetAsync(
                     $"{Host}api/navigator"
                 );
 
@@ -125,6 +126,25 @@ namespace BSTClient.API
                 }
 
                 return (false, GetJsonMessage(respJson), null);
+            }
+            catch (Exception ex)
+            {
+                return (false, ex.Message, null);
+            }
+        }
+
+        public async Task<(bool success, string message, string)> UploadFile(string path, string remark, FileUploadCallback callback)
+        {
+            try
+            {
+                var result = await HttpClient.UploadFileAsync(
+                    $"{Host}api/explorer/upload", new Dictionary<string, string>
+                    {
+                        ["Remark"] = remark
+                    }, new[] { path }, callback
+                );
+
+                return (true, null, result);
             }
             catch (Exception ex)
             {
@@ -172,7 +192,7 @@ namespace BSTClient.API
             var bytes = Encoding.UTF8.GetBytes(user + ":" + pass);
             var base64 = Convert.ToBase64String(bytes);
             var g = new AuthenticationHeaderValue("Basic", base64);
-            _hc.DefaultRequestHeaders.Authorization = g;
+            HttpClient.DefaultRequestHeaders.Authorization = g;
             if (update)
                 UserPasswordManager.Set(user, pass);
 

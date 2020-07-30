@@ -1,6 +1,7 @@
 ﻿using BSTClient.API;
 using BSTClient.API.Models.Response;
 using BSTClient.Helpers;
+using Microsoft.Win32;
 using System;
 using System.IO;
 using System.Linq;
@@ -13,6 +14,8 @@ namespace BSTClient.Pages
     public class FilesPageVm : VmBase
     {
         private MyDirectoryObject _directoryObject;
+        private long _current;
+        private long _total;
 
         public MyDirectoryObject DirectoryObject
         {
@@ -25,10 +28,32 @@ namespace BSTClient.Pages
             }
         }
 
+        public long Current
+        {
+            get => _current;
+            set
+            {
+                if (value == _current) return;
+                _current = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public long Total
+        {
+            get => _total;
+            set
+            {
+                if (value == _total) return;
+                _total = value;
+                OnPropertyChanged();
+            }
+        }
+
         public ICommand RefreshCommand => new DelegateCommand(async arg =>
         {
             var fixedPath =
-                FilesPage.FixRelativePath(DirectoryObject.RelativePath, DirectoryObject.DirectorySeparatorChar);
+                FilesPage.FixRelativePath(DirectoryObject.RelativePath, Path.DirectorySeparatorChar);
             var (success, message, directoryObject) =
                 await Requester.Default.GetDirectoryInfo(fixedPath);
             if (success)
@@ -44,8 +69,8 @@ namespace BSTClient.Pages
         public ICommand ParentCommand => new DelegateCommand(async arg =>
         {
             var fixedPath =
-                FilesPage.FixRelativePath(DirectoryObject.RelativePath, DirectoryObject.DirectorySeparatorChar);
-            var split = fixedPath.Split(DirectoryObject.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries);
+                FilesPage.FixRelativePath(DirectoryObject.RelativePath, Path.DirectorySeparatorChar);
+            var split = fixedPath.Split(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries);
             if (split.Length == 0) return;
 
             var newPath = string.Join(Path.DirectorySeparatorChar, split.Take(split.Length - 1));
@@ -57,6 +82,27 @@ namespace BSTClient.Pages
                 DirectoryObject = MyDirectoryObject.FromDirectoryObject(directoryObject);
             }
             else
+            {
+                MessageBox.Show(message);
+            }
+        });
+
+        public ICommand UploadCommand => new DelegateCommand(async arg =>
+        {
+            var file = new OpenFileDialog();
+            var b = file.ShowDialog();
+            if (b != true) return;
+            var (success, message, data) = await Requester.Default.UploadFile(
+                file.FileName,
+                null, (total, current) =>
+                {
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        Total = total;
+                        Current = current;
+                    });
+                });
+            if (!success)
             {
                 MessageBox.Show(message);
             }

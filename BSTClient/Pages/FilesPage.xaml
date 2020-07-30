@@ -90,6 +90,24 @@
                         Text="&#xF78A;" />
                 </Button>
             </ToolBar>
+            <ToolBar Padding="6">
+                <Label Height="28" Margin="3,0,0,0">
+                    <TextBlock>
+                        <Run Text="Current: " /><Run Text="{Binding Current}" />
+                    </TextBlock>
+                </Label>
+                <Label Height="28" Margin="3,0,0,0">
+                    <TextBlock>
+                        <Run Text="Total: " /><Run Text="{Binding Total}" />
+                    </TextBlock>
+                </Label>
+                <Button
+                    Height="28"
+                    Margin="3,0,0,0"
+                    Command="{Binding UploadCommand}"
+                    Content="Upload"
+                    Style="{StaticResource ButtonInfo}" />
+            </ToolBar>
         </ToolBarTray>
         <DataGrid
             Grid.Row="1"
