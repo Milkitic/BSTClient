@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace ConsoleSimulation.Converters
+namespace BSTClient.Command.Converters
 {
     internal class ToIPAddressConverter : ValueConverter<IPAddress>
     {

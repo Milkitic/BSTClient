@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ConsoleSimulation.Converters
+namespace BSTClient.Command.Converters
 {
     internal interface IValueConverter
     {

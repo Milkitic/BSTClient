@@ -1,4 +1,4 @@
-﻿namespace ConsoleSimulation.Converters
+﻿namespace BSTClient.Command.Converters
 {
     internal class ToStringConverter : ValueConverter<string>
     {

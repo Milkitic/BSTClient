@@ -1,8 +1,8 @@
-﻿using ConsoleSimulation.Converters;
+﻿using BSTClient.Command.Converters;
 using System;
 using System.Net;
 
-namespace ConsoleSimulation
+namespace BSTClient.Command
 {
     public class CommandHelper
     {
@@ -38,9 +38,12 @@ namespace ConsoleSimulation
             {
                 value = new ToIPAddressConverter();
             }
-            else if (t == typeof(int))
+            else
             {
-                value = new ToNumberConverter();
+                if (ToNumberConverter.IsNumberType(t))
+                {
+                    value = new ToNumberConverter();
+                }
             }
 
             if (value == null)

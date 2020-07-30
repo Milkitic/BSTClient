@@ -7,9 +7,9 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleApp1.MultipartUpload
+namespace CLIFileUploadClient
 {
-    public static class OptimizedHttpHelper
+    public static class MultipartUploadClient
     {
         private static readonly Encoding DefaultEncoding = Encoding.UTF8;
 
@@ -62,6 +62,8 @@ namespace ConsoleApp1.MultipartUpload
             byte[] endBytes = Encoding.ASCII.GetBytes($"\r\n--{boundary}--\r\n");
 
             var request = (HttpWebRequest)WebRequest.Create(url);
+            request.SendChunked = true;
+            request.AllowWriteStreamBuffering = false;
             request.ContentType = "multipart/form-data; boundary=" + boundary;
             request.Method = "POST";
             request.KeepAlive = true;
@@ -70,8 +72,10 @@ namespace ConsoleApp1.MultipartUpload
             var keys = request.Headers.AllKeys;
             if (headerData != null)
             {
-                foreach (var (key, value) in headerData)
+                foreach (var kvp in headerData)
                 {
+                    var key = kvp.Key;
+                    var value = kvp.Value;
                     if (keys.Contains(key))
                     {
                         request.Headers[key] = value;
@@ -83,7 +87,7 @@ namespace ConsoleApp1.MultipartUpload
                 }
             }
 
-            await using (var stream = await request.GetRequestStreamAsync().ConfigureAwait(false))
+            using (var stream = await request.GetRequestStreamAsync().ConfigureAwait(false))
             {
                 //1.1 key/value
                 if (formData != null)
@@ -108,12 +112,14 @@ namespace ConsoleApp1.MultipartUpload
             }
 
             //2.WebResponse
-            using var response = (HttpWebResponse)await request.GetResponseAsync().ConfigureAwait(false);
-            await using var responseStream = response.GetResponseStream();
-            if (responseStream == null) return null;
+            using (var response = (HttpWebResponse)await request.GetResponseAsync().ConfigureAwait(false))
+            using (var responseStream = response.GetResponseStream())
+            {
+                if (responseStream == null) return null;
 
-            using var sr = new StreamReader(responseStream);
-            return await sr.ReadToEndAsync().ConfigureAwait(false);
+                using (var sr = new StreamReader(responseStream))
+                    return await sr.ReadToEndAsync().ConfigureAwait(false);
+            }
         }
 
         private static async Task WriteFileAsync(Encoding encoding, string key, string filePath, Stream stream,
@@ -126,14 +132,16 @@ namespace ConsoleApp1.MultipartUpload
 
             await stream.WriteAsync(headerBytes, 0, headerBytes.Length).ConfigureAwait(false);
             byte[] buffer = new byte[4096];
-            await using var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-            var total = fileStream.Length;
-            int bytesRead;
-            while ((bytesRead = fileStream.Read(buffer, 0, buffer.Length)) != 0)
+            using (var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
             {
-                await stream.WriteAsync(buffer, 0, bytesRead).ConfigureAwait(false);
-                callback?.Invoke(i, total, fileStream.Position);
-                buffer = new byte[4096];
+                var total = fileStream.Length;
+                int bytesRead;
+                while ((bytesRead = fileStream.Read(buffer, 0, buffer.Length)) != 0)
+                {
+                    await stream.WriteAsync(buffer, 0, bytesRead).ConfigureAwait(false);
+                    callback?.Invoke(i, total, fileStream.Position);
+                    buffer = new byte[4096];
+                }
             }
         }
 

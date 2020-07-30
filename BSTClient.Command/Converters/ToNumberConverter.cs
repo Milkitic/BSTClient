@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace ConsoleSimulation.Converters
+namespace BSTClient.Command.Converters
 {
     internal class ToNumberConverter : ValueConverter
     {
@@ -13,7 +13,7 @@ namespace ConsoleSimulation.Converters
             throw new Exception(converted?.ToString());
         }
 
-        private static bool IsNumberType(Type value)
+        public static bool IsNumberType(Type value)
         {
             return value == typeof(sbyte)
                    || value == typeof(byte)
