@@ -23,9 +23,10 @@
             <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <ToolBarTray Margin="5" VerticalAlignment="Center">
-            <ToolBar Padding="6">
-                <!--<Button
+        <Border x:Name="ToolBarTrayContainer">
+            <ToolBarTray Margin="5" VerticalAlignment="Center">
+                <ToolBar Padding="6">
+                    <!--<Button
                     Width="28"
                     Height="28"
                     Margin="3,0,0,0"
@@ -35,80 +36,83 @@
                         Style="{StaticResource TextBlockFabricIcons}"
                         Text="&#xE72B;" />
                 </Button>-->
-                <Button
-                    Width="28"
-                    Height="28"
-                    Margin="3,0,0,0"
-                    Padding="0"
-                    Command="{Binding ParentCommand}">
-                    <TextBlock
-                        FontSize="14"
-                        Style="{StaticResource TextBlockFabricIcons}"
-                        Text="&#xE74A;" />
-                </Button>
-                <TextBox
-                    x:Name="TbPath"
-                    MinWidth="300"
-                    Margin="3,0,0,0"
-                    KeyDown="TextBox_KeyDown"
-                    LostFocus="TbPath_LostFocus"
-                    Text="{Binding DirectoryObject.RelativePath, Mode=OneWay}" />
-                <Button
-                    x:Name="BtnRefresh"
-                    Width="28"
-                    Height="28"
-                    Margin="3,0,0,0"
-                    Padding="0"
-                    Command="{Binding RefreshCommand}"
-                    Style="{StaticResource ButtonPrimary}">
-                    <TextBlock
-                        FontSize="14"
-                        Style="{StaticResource TextBlockFabricIcons}"
-                        Text="&#xE72C;" />
-                </Button>
-            </ToolBar>
-            <ToolBar Padding="6">
-                <Button
-                    Width="28"
-                    Height="28"
-                    Margin="3,0,0,0"
-                    Padding="0">
-                    <TextBlock
-                        FontSize="14"
-                        Style="{StaticResource TextBlockFabricIcons}"
-                        Text="&#xE8AC;" />
-                </Button>
-                <Button
-                    Width="28"
-                    Height="28"
-                    Margin="3,0,0,0"
-                    Padding="0"
-                    Style="{StaticResource ButtonDanger}">
-                    <TextBlock
-                        FontSize="14"
-                        Style="{StaticResource TextBlockFabricIcons}"
-                        Text="&#xF78A;" />
-                </Button>
-            </ToolBar>
-            <ToolBar Padding="6">
-                <Label Height="28" Margin="3,0,0,0">
-                    <TextBlock>
-                        <Run Text="Current: " /><Run Text="{Binding Current}" />
-                    </TextBlock>
-                </Label>
-                <Label Height="28" Margin="3,0,0,0">
-                    <TextBlock>
-                        <Run Text="Total: " /><Run Text="{Binding Total}" />
-                    </TextBlock>
-                </Label>
-                <Button
-                    Height="28"
-                    Margin="3,0,0,0"
-                    Command="{Binding UploadCommand}"
-                    Content="Upload"
-                    Style="{StaticResource ButtonInfo}" />
-            </ToolBar>
-        </ToolBarTray>
+                    <Button
+                        Width="28"
+                        Height="28"
+                        Margin="3,0,0,0"
+                        Padding="0"
+                        Command="{Binding ParentCommand}">
+                        <TextBlock
+                            FontSize="14"
+                            Style="{StaticResource TextBlockFabricIcons}"
+                            Text="&#xE74A;" />
+                    </Button>
+                    <TextBox
+                        x:Name="TbPath"
+                        MinWidth="300"
+                        Margin="3,0,0,0"
+                        KeyDown="TextBox_KeyDown"
+                        LostFocus="TbPath_LostFocus"
+                        Text="{Binding DirectoryObject.RelativePath, Mode=OneWay}" />
+                    <Button
+                        x:Name="BtnRefresh"
+                        Width="28"
+                        Height="28"
+                        Margin="3,0,0,0"
+                        Padding="0"
+                        Command="{Binding RefreshCommand}"
+                        Style="{StaticResource ButtonPrimary}">
+                        <TextBlock
+                            FontSize="14"
+                            Style="{StaticResource TextBlockFabricIcons}"
+                            Text="&#xE72C;" />
+                    </Button>
+                </ToolBar>
+                <ToolBar Padding="6">
+                    <Button
+                        Width="28"
+                        Height="28"
+                        Margin="3,0,0,0"
+                        Padding="0">
+                        <TextBlock
+                            FontSize="14"
+                            Style="{StaticResource TextBlockFabricIcons}"
+                            Text="&#xE8AC;" />
+                    </Button>
+                    <Button
+                        Width="28"
+                        Height="28"
+                        Margin="3,0,0,0"
+                        Padding="0"
+                        Style="{StaticResource ButtonDanger}">
+                        <TextBlock
+                            FontSize="14"
+                            Style="{StaticResource TextBlockFabricIcons}"
+                            Text="&#xF78A;" />
+                    </Button>
+                </ToolBar>
+                <ToolBar Padding="6">
+                    <Label Height="28" Margin="3,0,0,0">
+                        <TextBlock>
+                            <Run Text="Current: " /><Run Text="{Binding Current}" />
+                        </TextBlock>
+                    </Label>
+                    <Label Height="28" Margin="3,0,0,0">
+                        <TextBlock>
+                            <Run Text="Total: " /><Run Text="{Binding Total}" />
+                        </TextBlock>
+                    </Label>
+                    <Button
+                        Height="28"
+                        Margin="3,0,0,0"
+                        Command="{Binding UploadCommand}"
+                        Content="Upload"
+                        Style="{StaticResource ButtonInfo}" />
+                    <Button Click="BtnSave_Click" Content="save" />
+                    <Button Click="BtnLoad_Click" Content="load" />
+                </ToolBar>
+            </ToolBarTray>
+        </Border>
         <DataGrid
             Grid.Row="1"
             AutoGenerateColumns="False"

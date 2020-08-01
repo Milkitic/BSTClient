@@ -8,6 +8,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Markup;
 
 namespace BSTClient.Pages
 {
@@ -138,6 +139,8 @@ namespace BSTClient.Pages
                 }
 
                 _loaded = true;
+
+
             }
         }
 
@@ -205,6 +208,22 @@ namespace BSTClient.Pages
         {
             //_viewModel.DirectoryObject.RelativePath = _viewModel.DirectoryObject.RelativePath;
             //TbPath.SelectionLength = 0;
+        }
+
+        private void BtnSave_Click(object sender, RoutedEventArgs e)
+        {
+            var str = XamlWriter.Save(ToolBarTrayContainer.Child);
+            File.WriteAllText("a.xaml", str);
+        }
+
+        private void BtnLoad_Click(object sender, RoutedEventArgs e)
+        {
+            using (var sr = new FileStream("a.xaml", FileMode.Open))
+            {
+                var child = XamlReader.Load(sr);
+                ToolBarTrayContainer.Child = (UIElement)child;
+            }
+            //File.WriteAllText(, str);
         }
     }
 }
