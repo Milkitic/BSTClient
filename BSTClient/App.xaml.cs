@@ -7,8 +7,11 @@ namespace BSTClient
     /// </summary>
     public partial class App : Application
     {
+        private UploadManager _uploadManage;
+
         private void Application_Startup(object sender, StartupEventArgs e)
         {
+            _uploadManage = new UploadManager();
         }
     }
 }

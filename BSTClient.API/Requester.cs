@@ -19,8 +19,8 @@ namespace BSTClient.API
         public HttpClient HttpClient { get; } = new HttpClient();
         private bool _initialized;
 
-        //public string Host { get; set; } = "http://localhost:27001/";
-        public string Host { get; set; } = "http://milkitic.name:27001/";
+        public string Host { get; set; } = "http://localhost:27001/";
+        //public string Host { get; set; } = "http://milkitic.name:27001/";
 
         public static Requester Default { get; private set; }
 
@@ -126,25 +126,6 @@ namespace BSTClient.API
                 }
 
                 return (false, GetJsonMessage(respJson), null);
-            }
-            catch (Exception ex)
-            {
-                return (false, ex.Message, null);
-            }
-        }
-
-        public async Task<(bool success, string message, string)> UploadFile(string path, string remark, FileUploadCallback callback)
-        {
-            try
-            {
-                var result = await HttpClient.UploadFileAsync(
-                    $"{Host}api/explorer/upload", new Dictionary<string, string>
-                    {
-                        ["Remark"] = remark
-                    }, new[] { path }, callback
-                );
-
-                return (true, null, result);
             }
             catch (Exception ex)
             {

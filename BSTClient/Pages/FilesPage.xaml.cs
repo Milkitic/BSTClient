@@ -88,24 +88,18 @@ namespace BSTClient.Pages
             }
         });
 
-        public ICommand UploadCommand => new DelegateCommand(async arg =>
+        public ICommand UploadCommand => new DelegateCommand(arg =>
         {
-            var file = new OpenFileDialog();
-            var b = file.ShowDialog();
+            var ofd = new OpenFileDialog();
+            var b = ofd.ShowDialog();
             if (b != true) return;
-            var (success, message, data) = await Requester.Default.UploadFile(
-                file.FileName,
-                null, (total, current) =>
-                {
-                    Application.Current.Dispatcher.Invoke(() =>
-                    {
-                        Total = total;
-                        Current = current;
-                    });
-                });
-            if (!success)
+            try
             {
-                MessageBox.Show(message);
+                UploadManager.Default.AddTask(ofd.FileName);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         });
     }

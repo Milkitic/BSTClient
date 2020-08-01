@@ -1,4 +1,6 @@
-﻿using BSTClient.Shared;
+﻿using BSTClient.API.Models.Response;
+using BSTClient.Shared;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -6,9 +8,8 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
-using BSTClient.API.Models.Response;
-using Newtonsoft.Json;
 
 namespace BSTClient.API
 {
@@ -16,13 +17,17 @@ namespace BSTClient.API
     {
         private static readonly string ExecutablePath =
             Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "extensions", "CLIClient", "CLIClient.exe");
+
+        private Process _proc;
+
         public async Task<string> UploadFileAsync(
             string url,
             IDictionary<string, string> headerData,
             IDictionary<string, string> formData,
             Encoding encoding,
             IList<string> filePaths,
-            FileUploadCallback callback)
+            FileUploadCallback callback,
+            CancellationTokenSource cts)
         {
             if (!File.Exists(ExecutablePath))
                 throw new FileNotFoundException("The executable client was not found in: " + ExecutablePath);
@@ -52,7 +57,8 @@ namespace BSTClient.API
             }
 
             string arguments = sb.ToString();
-            var proc = new Process
+            CancelPreviousTask();
+            _proc = new Process
             {
                 EnableRaisingEvents = true,
                 StartInfo = new ProcessStartInfo
@@ -70,12 +76,21 @@ namespace BSTClient.API
             string errMsg = null;
             bool isResultReady = false;
             var resultSb = new StringBuilder();
-            proc.OutputDataReceived += Proc_OutputDataReceived;
-            proc.ErrorDataReceived += Proc_ErrorDataReceived;
-            proc.Start();
-            proc.BeginErrorReadLine();
-            proc.BeginOutputReadLine();
-            await proc.WaitForExitAsync();
+            _proc.OutputDataReceived += Proc_OutputDataReceived;
+            _proc.ErrorDataReceived += Proc_ErrorDataReceived;
+            _proc.Start();
+            _proc.BeginErrorReadLine();
+            _proc.BeginOutputReadLine();
+            try
+            {
+                await _proc.WaitForExitAsync(cts.Token);
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine("Canceled task: " + ex.Message);
+                CancelPreviousTask();
+                throw;
+            }
 
             if (errMsg != null) throw new Exception(errMsg);
 
@@ -132,8 +147,14 @@ namespace BSTClient.API
             return resultSb.ToString();
         }
 
+        public void CancelPreviousTask()
+        {
+            if (_proc != null && !_proc.HasExited) _proc?.Kill();
+        }
+
         public void Dispose()
         {
+            CancelPreviousTask();
         }
     }
 
@@ -143,25 +164,28 @@ namespace BSTClient.API
 
         public static async Task<string> UploadFileAsync(this HttpClient httpClient, string url,
             FileUploadCallback callback = null,
+            CancellationTokenSource cts = null,
             params string[] filePaths)
         {
-            return await UploadFileAsync(httpClient, url, null, filePaths, callback).ConfigureAwait(false);
+            return await UploadFileAsync(httpClient, url, null, filePaths, callback, cts).ConfigureAwait(false);
         }
 
         public static async Task<string> UploadFileAsync(this HttpClient httpClient, string url,
             IDictionary<string, string> formData,
             FileUploadCallback callback = null,
+            CancellationTokenSource cts = null,
             params string[] filePaths)
         {
-            return await UploadFileAsync(httpClient, url, formData, filePaths, callback).ConfigureAwait(false);
+            return await UploadFileAsync(httpClient, url, formData, filePaths, callback, cts).ConfigureAwait(false);
         }
 
         public static async Task<string> UploadFileAsync(this HttpClient httpClient, string url,
             IDictionary<string, string> formData,
             IList<string> filePaths,
-            FileUploadCallback callback = null)
+            FileUploadCallback callback = null,
+            CancellationTokenSource cts = null)
         {
-            return await UploadFileAsync(httpClient, url, formData, DefaultEncoding, filePaths, callback).ConfigureAwait(false);
+            return await UploadFileAsync(httpClient, url, formData, DefaultEncoding, filePaths, callback, cts).ConfigureAwait(false);
         }
 
         public static async Task<string> UploadFileAsync(this HttpClient httpClient,
@@ -169,14 +193,15 @@ namespace BSTClient.API
             IDictionary<string, string> formData,
             Encoding encoding,
             IList<string> filePaths,
-            FileUploadCallback callback = null)
+            FileUploadCallback callback = null,
+            CancellationTokenSource cts = null)
         {
             var headerData = httpClient?.DefaultRequestHeaders.ToDictionary(
                 k => k.Key, k => k.Value.LastOrDefault());
 
             using (var client = new MultipartUploadClient())
             {
-                return await client.UploadFileAsync(url, headerData, formData, encoding, filePaths, callback)
+                return await client.UploadFileAsync(url, headerData, formData, encoding, filePaths, callback, cts)
                     .ConfigureAwait(false);
             }
         }
