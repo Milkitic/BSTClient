@@ -19,8 +19,8 @@ namespace BSTClient.API
         public HttpClient HttpClient { get; } = new HttpClient();
         private bool _initialized;
 
-        public string Host { get; set; } = "http://localhost:27001/";
-        //public string Host { get; set; } = "http://milkitic.name:27001/";
+        //public string Host { get; set; } = "http://localhost:27001/";
+        public string Host { get; set; } = "http://milkitic.name:27001/";
 
         public static Requester Default { get; private set; }
 

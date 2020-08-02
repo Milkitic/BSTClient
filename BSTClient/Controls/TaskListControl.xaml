@@ -5,6 +5,7 @@
     xmlns:bstClient="clr-namespace:BSTClient"
     xmlns:converters="clr-namespace:BSTClient.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:hc="https://handyorg.github.io/handycontrol"
     xmlns:local="clr-namespace:BSTClient.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:DesignHeight="450"
@@ -12,6 +13,9 @@
     mc:Ignorable="d">
     <UserControl.Resources>
         <converters:RunStatus2IsIndeterminateConverter x:Key="RunStatus2IsIndeterminateConverter" />
+        <converters:BoolTrueToVisibilityConverter x:Key="BoolTrueToVisibilityConverter" />
+        <converters:BoolFalseToVisibilityConverter x:Key="BoolFalseToVisibilityConverter" />
+        <converters:SuccessMessageToHiddenConverter x:Key="SuccessMessageToHiddenConverter" />
     </UserControl.Resources>
     <UserControl.DataContext>
         <local:TaskListControlVm />
@@ -41,17 +45,58 @@
                                 Margin="3" />
                             <StackPanel Grid.Column="1" HorizontalAlignment="Stretch">
                                 <TextBlock Margin="0,3">
-                                    <Run Text="{Binding Name}" /><Run Text="  " /><Run Foreground="#929292" Text="{Binding TotalSize}" />
+                                    <Run Text="{Binding Name}" />
                                 </TextBlock>
-                                <ProgressBar
+                                <StackPanel Visibility="{Binding RunStatus, Converter={StaticResource BoolTrueToVisibilityConverter}}">
+                                    <Border
+                                        Margin="0,3"
+                                        HorizontalAlignment="Stretch"
+                                        BorderBrush="{StaticResource RegionBrush}"
+                                        BorderThickness="1">
+                                        <ProgressBar
+                                            IsIndeterminate="{Binding RunStatus, Converter={StaticResource RunStatus2IsIndeterminateConverter}}"
+                                            Maximum="{Binding TotalSize}"
+                                            Style="{StaticResource ProgressBarFlat}"
+                                            Value="{Binding TransferredSize}" />
+                                    </Border>
+                                    <Grid Margin="0,3">
+                                        <TextBlock FontSize="11" Foreground="{DynamicResource TextBrush}">
+                                            <Run Text="{Binding TransferredSize, Converter={StaticResource ByteToFriendlyStringConverter}}" /><Run Text=" / " /><Run Text="{Binding TotalSize, Converter={StaticResource ByteToFriendlyStringConverter}}" />
+                                        </TextBlock>
+                                        <TextBlock HorizontalAlignment="Right" FontSize="11">
+                                            <Run Text="{Binding BytePerSecond, Converter={StaticResource ByteToFriendlyStringConverter}}" /><Run Text="/s" />
+                                        </TextBlock>
+                                    </Grid>
+                                </StackPanel>
+                                <Grid
                                     Margin="0,3"
-                                    HorizontalAlignment="Stretch"
-                                    IsIndeterminate="{Binding RunStatus, Converter={StaticResource RunStatus2IsIndeterminateConverter}}"
-                                    Maximum="{Binding TotalSize}"
-                                    Style="{StaticResource ProgressBarInfo}"
-                                    Value="{Binding TransferredSize}" />
+                                    TextBlock.FontSize="11"
+                                    Visibility="{Binding RunStatus, Converter={StaticResource BoolFalseToVisibilityConverter}}">
+                                    <TextBlock
+                                        MaxWidth="180"
+                                        HorizontalAlignment="Left"
+                                        Opacity="0.7"
+                                        Text="{Binding StatusMessage}"
+                                        TextDecorations="Underline"
+                                        ToolTip="{Binding StatusMessage}" />
+                                    <TextBlock
+                                        HorizontalAlignment="Right"
+                                        Foreground="{DynamicResource DangerBrush}"
+                                        Text="任务出错"
+                                        Visibility="{Binding StatusMessage, Converter={StaticResource SuccessMessageToHiddenConverter}}" />
+                                </Grid>
                             </StackPanel>
-                            <TextBlock Grid.Column="2" Text="{Binding BytePerSecond}" />
+                            <Button
+                                Grid.Column="2"
+                                Width="16"
+                                Height="16"
+                                Margin="5,0,-5,0"
+                                Padding="0"
+                                hc:IconElement.Geometry="{StaticResource DeleteGeometry}"
+                                hc:IconElement.Height="8"
+                                hc:IconElement.Width="8"
+                                Command="{Binding CancelConfirmAction}"
+                                Style="{StaticResource ButtonDanger}" />
                         </Grid>
                     </Border>
                 </DataTemplate>
