@@ -218,6 +218,7 @@ namespace BSTClient
         private bool? _runStatus;
         private string _statusMessage;
         private long _bytePerSecond;
+        private bool _isSelected;
 
         public TaskObj(Action cancelAction)
         {
@@ -304,6 +305,17 @@ namespace BSTClient
                 if (value == _bytePerSecond) return;
                 _bytePerSecond = value;
                 Execute.OnUiThread(() => OnPropertyChanged());
+            }
+        }
+
+        public bool IsSelected
+        {
+            get => _isSelected;
+            set
+            {
+                if (value == _isSelected) return;
+                _isSelected = value;
+                OnPropertyChanged();
             }
         }
 
